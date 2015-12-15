@@ -2,113 +2,97 @@
 
 namespace ClassDemonstration
 {
-
+  // Draw field Exception ------------------------------------------------------------------------------------------------------
   class DrawFieldException : Exception
   {
     public DrawFieldException (Shape shape)
     {
-      Console.WriteLine ("Фигура {0} {1} превысила размеры области вывода", shape.GetNameShape (), shape.GetNameInstance ());
+
+      Console.WriteLine ("Фигура {0} {1} превысила размеры области вывода", shape.NameShape, shape.NameInstance);
     }
   }
 
+  // Draw field ----------------------------------------------------------------------------------------------------------------
   static class DrawField
   {
-    public static int X { get; } = 1000;
-    public static int Y { get; } = 500;
+    public static int Width { get; } = 1000;
+    public static int Height { get; } = 500;
   }
 
+  // Abstract class Shape ------------------------------------------------------------------------------------------------------
   abstract class Shape
   {
-    protected int X;
-    protected int Y;
-    private readonly string _nameShape;
-    private string _nameInstance;
 
-    protected Shape (int x, int y, string nameShape)
+    public string NameShape { get; private set; }
+
+    public string NameInstance { get; set; }
+
+    protected Shape (string nameShape)
     {
-      CheckToDrawField (x, y);
-      X = x;
-      Y = y;
-      _nameShape = nameShape;
+      NameShape = nameShape;
     }
 
-    public int GetX ()
-    {
-      return X;
-    }
+//    public string GetNameShape ()
+//    {
+//      return _nameShape;
+//    }
 
-    public int GetY ()
+    protected virtual void CheckToDrawField (int x, int y)
     {
-      return Y;
-    }
-
-    public string GetNameShape ()
-    {
-      return _nameShape;
-    }
-
-    private void CheckToDrawField (int x, int y)
-    {
-      if (DrawField.X < x || DrawField.Y < y || x < 0 || y < 0)
+      if (DrawField.Width < x || DrawField.Height < y || x < 0 || y < 0)
         throw new DrawFieldException(this);
     }
 
-    public void MoveTo (int x, int y)
-    {
-      CheckToDrawField (x, y);
-      Clear ();
-      X = x;
-      Y = y;
-      Draw ();
-    }
+   // protected abstract void Clear ();
 
-    protected abstract void Clear ();
-
-    protected virtual void Draw ()
-    {
-      Console.WriteLine ("Подготовка к рисованию...");
-    }
-
-
-    public void SetNameInstance (string nameInstance)
-    {
-      _nameInstance = nameInstance;
-    }
-
-    public string GetNameInstance ()
-    {
-      return _nameInstance;
-    }
+   // protected virtual void Draw ()
+   // {
+   //   Console.WriteLine ("Подготовка к рисованию...");
+   // }
 
   }
 
- 
+  // Class Point ---------------------------------------------------------------------------------------------------------------
   class Point : Shape
   {
-    public Point (int x, int y) : base (x, y, "ТОЧКА")
+    protected int X { get; set; }
+    protected int Y { get; set; }
+
+    public Point (int x, int y) : base ("ТОЧКА")
+    {
+      CheckToDrawField (x, y);
+    }
+
+    protected Point (int x, int y, string nameShape) : base (nameShape)
     {
       
     }
 
-    protected Point (int x, int y, string nameShape) : base (x, y, nameShape)
+
+    public void MoveTo(int x, int y)
     {
-      
+      if (x == X && y == Y) return;
+      CheckToDrawField(x, y);
+      Clear();
+      X = x;
+      Y = y;
+      Draw();
     }
 
-    protected override void Clear ()
+
+    protected virtual void Clear ()
     {
-      Console.WriteLine ("Очищаем {0} в {1}, {2}", GetNameShape(), X, Y);
+      Console.WriteLine ("Очищаем {0} в {1}, {2}",NameShape, X, Y);
     }
 
-    protected override void Draw ()
+    protected virtual void Draw ()
     {
-      base.Draw ();
-      Console.WriteLine ("Рисуем {0} в {1}, {2}", GetNameShape(), X, Y);
+      Console.WriteLine ("Рисуем {0} в {1}, {2}", NameShape, X, Y);
     }
   
   }
 
-
+  // Class Cercle --------------------------------------------------------------------------------------------------------------
   class Circe : Point
   {
     private int _radius;
@@ -120,12 +104,12 @@ namespace ClassDemonstration
 
     protected override void Clear ()
     {
-      Console.WriteLine ("Очищаем {0} радиусом {1} в точку {2}, {3}", GetNameShape (), _radius, X, Y);
+      Console.WriteLine ("Очищаем {0} радиусом {1} в точку {2}, {3}", NameShape, _radius, X, Y);
     }
 
     protected override void Draw ()
     {
-      Console.WriteLine("Рисуем {0} радиусом {1} в точку {2}, {3}", GetNameShape(), _radius, X, Y);
+      Console.WriteLine("Рисуем {0} радиусом {1} в точку {2}, {3}", NameShape, _radius, X, Y);
     }
 
     public void ChangeRadius (int radius)
@@ -141,7 +125,13 @@ namespace ClassDemonstration
   }
 
 
+//  class Line : Shape
+//  {
+//    private int _x1, x2;
 
+//  }
+
+  // Main program class --------------------------------------------------------------------------------------------------------
   class Program
   {
     static void Main(string[] args)
@@ -154,13 +144,13 @@ namespace ClassDemonstration
 
         //circle -------
         var circle = new Circe (2, 5, 10);
-        circle.SetNameInstance ("Кружочек");
+        circle.NameInstance = "Кружочек";
         circle.MoveTo (20, 10);
-        circle.ChangeRadius (-20);
+        circle.ChangeRadius (20);
       }
       catch (DrawFieldException)
       {
-        
+        Console.WriteLine($"Программа отработала с исключением {typeof (DrawFieldException).Name}"); 
       }
       Console.ReadKey ();
     }
