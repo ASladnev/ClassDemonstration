@@ -32,24 +32,11 @@ namespace ClassDemonstration
       NameShape = nameShape;
     }
 
-//    public string GetNameShape ()
-//    {
-//      return _nameShape;
-//    }
-
     protected virtual void CheckToDrawField (int x, int y)
     {
       if (DrawField.Width < x || DrawField.Height < y || x < 0 || y < 0)
         throw new DrawFieldException(this);
     }
-
-   // protected abstract void Clear ();
-
-   // protected virtual void Draw ()
-   // {
-   //   Console.WriteLine ("Подготовка к рисованию...");
-   // }
-
   }
 
   // Class Point ---------------------------------------------------------------------------------------------------------------
@@ -61,24 +48,31 @@ namespace ClassDemonstration
     public Point (int x, int y) : base ("ТОЧКА")
     {
       CheckToDrawField (x, y);
+      X = x;
+      Y = y;
     }
 
     protected Point (int x, int y, string nameShape) : base (nameShape)
     {
-      
+      CheckToDrawField(x, y);
+      X = x;
+      Y = y;
     }
-
 
     public void MoveTo(int x, int y)
     {
       if (x == X && y == Y) return;
       CheckToDrawField(x, y);
       Clear();
-      X = x;
-      Y = y;
+      ChangeAnchor(x, y);
       Draw();
     }
 
+    protected virtual void ChangeAnchor (int x, int y)
+    {
+      X = x;
+      Y = y;
+    }
 
     protected virtual void Clear ()
     {
@@ -92,7 +86,7 @@ namespace ClassDemonstration
   
   }
 
-  // Class Cercle --------------------------------------------------------------------------------------------------------------
+  // Class Circle --------------------------------------------------------------------------------------------------------------
   class Circe : Point
   {
     private int _radius;
@@ -124,12 +118,44 @@ namespace ClassDemonstration
     }
   }
 
+  // Class Line ----------------------------------------------------------------------------------------------------------------
+  class Line : Point
+  {
+    protected int X1 { get; set; }
+    protected int Y1 { get; set; }
 
-//  class Line : Shape
-//  {
-//    private int _x1, x2;
+    public Line (int x, int y, int x1, int y1) : base (x, y, "Линия")
+    {
+      X1 = x1;
+      Y1 = y1;
+    }
 
-//  }
+    protected override void Clear()
+    {
+      Console.WriteLine ($"Очищаем {NameShape} из точки {X}, {Y}  в точку {X1}, {Y1}");
+    }
+
+    protected override void Draw()
+    {
+      Console.WriteLine($"Рисуем  {NameShape} из точки {X}, {Y}  в точку {X1}, {Y1}");
+    }
+
+    private int dx, dy;
+
+    protected override void ChangeAnchor(int x, int y)
+    {
+      dx = x - X;
+      dy = y - Y;
+
+      X = x;
+      Y = y;
+
+      X1 += dx;
+      Y1 += dy;
+    }
+
+  }
+
 
   // Main program class --------------------------------------------------------------------------------------------------------
   class Program
@@ -147,6 +173,16 @@ namespace ClassDemonstration
         circle.NameInstance = "Кружочек";
         circle.MoveTo (20, 10);
         circle.ChangeRadius (20);
+
+        //line ---------
+        var line = new Line(2, 3, 70, 35);
+        line.MoveTo(40, 50);
+
+
+        //Shape1 -------
+        Shape1.ConsoleShape.WriteResult();
+
+
       }
       catch (DrawFieldException)
       {
