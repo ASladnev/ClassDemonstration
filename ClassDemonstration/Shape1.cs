@@ -30,14 +30,11 @@ namespace Shape1
   {
     private int _x, _y, _color;
 
-    public Point (int x, int y, int color) : base ("Точка")
+    public Point (int x, int y, int color) : this (x, y, color, "Точка")
     {
-      _x = x;
-      _y = y;
-      _color = color;
     }
 
-    public Point(int x, int y, int color, string shapeName) : base(shapeName)
+    public Point(int x, int y, int color, string shapeName) : base(shapeName) 
     {
       _x = x;
       _y = y;

@@ -46,7 +46,9 @@
   <ItemGroup>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Shapes1.cs" />
+    <Compile Include="Shape2.cs" />
+    <Compile Include="Shape1.cs" />
+    <Compile Include="Shape3.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

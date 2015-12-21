@@ -182,7 +182,11 @@ namespace ClassDemonstration
         //Shape1 -------
         Shape1.ConsoleShape.WriteResult();
 
+        //Shape2 -------
+        Shape2.ConsoleShape.WriteResult();
 
+        //Shape3 --------
+        Shape3.ConsoleShape.WriteResult();
       }
       catch (DrawFieldException)
       {
